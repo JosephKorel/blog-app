@@ -6,17 +6,21 @@ function Posts({
   posts,
   deletePost,
   isAuth,
+  index,
   addComment,
   setComment,
   deleteComment,
 }) {
-  console.log(posts);
   const commentSection = posts.comments.map((item, i) => (
     <>
-      <p>{item}</p>
-      <button onClick={() => deleteComment(posts.id, i)}>
-        Excluir comentário
-      </button>
+      {item.content !== "" && (
+        <li>
+          <p>{item.content}</p>
+          <button onClick={() => deleteComment(posts.id, i)}>
+            Excluir comentário
+          </button>
+        </li>
+      )}
     </>
   ));
   return (
@@ -29,12 +33,11 @@ function Posts({
         <h3>Comentários</h3>
         <input
           placeholder="Comente"
+          id={`${index}_input`}
           onChange={(e) => setComment(e.target.value)}
         ></input>
         <button onClick={() => addComment(posts.id)}>Novo comentário</button>
-        <ul>
-          <li>{commentSection}</li>
-        </ul>
+        <ul>{commentSection}</ul>
         {isAuth && posts.user.id == auth.currentUser.uid && (
           <button onClick={() => deletePost(posts.id)}>Excluir</button>
         )}

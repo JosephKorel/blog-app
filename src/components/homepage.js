@@ -3,6 +3,7 @@ import { database, auth } from "../firebase-config";
 import {
   getDocs,
   collection,
+  getDoc,
   deleteDoc,
   doc,
   setDoc,
@@ -37,23 +38,34 @@ function Home({ isAuth }) {
     setPostList(filteredPosts);
   };
 
-  const addComment = async (id) => {
+  const addComment = async (id, index) => {
     const targetPost = doc(database, "posts", id);
-    await updateDoc(targetPost, { comments: arrayUnion(comment) }).then(() => {
+    const targetInput = document.getElementById(`${index}_input`);
+
+    const snapshot = await getDoc(targetPost);
+
+    await updateDoc(targetPost, {
+      comments: [
+        ...snapshot.data().comments,
+        { userId: auth.currentUser.uid, content: comment },
+      ],
+    }).then(() => {
       getPost();
+      targetInput.value = "";
     });
   };
 
   const deleteComment = async (id, index, i) => {
     const targetPost = doc(database, "posts", id);
     const newPostList = postList.slice();
-    const targetComment = newPostList[index].comments[i];
-    console.log(targetComment);
-    await updateDoc(targetPost, { comments: arrayRemove(targetComment) }).then(
-      () => {
-        getPost();
-      }
+    const targetComment = newPostList[index].comments[i].content;
+    const filteredComment = newPostList[index].comments.filter(
+      (item) => item !== newPostList[index].comments[i]
     );
+
+    await updateDoc(targetPost, { comments: filteredComment }).then(() => {
+      getPost();
+    });
   };
   return (
     <div>
@@ -63,10 +75,12 @@ function Home({ isAuth }) {
           <Posts
             posts={posts}
             isAuth={isAuth}
+            comment={comment}
             setComment={setComment}
+            index={index}
             key={index}
             deletePost={(id) => deletePost(id)}
-            addComment={(id) => addComment(id)}
+            addComment={(id) => addComment(id, index)}
             deleteComment={(id, i) => deleteComment(id, index, i)}
           />
         ))}
