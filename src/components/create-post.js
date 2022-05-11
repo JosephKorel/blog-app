@@ -15,8 +15,8 @@ function CreatePost({ isAuth }) {
     await addDoc(postCollection, {
       title,
       body,
-      comments: [{ userId: "", content: "" }],
-      liked: false,
+      comments: [{ userId: "", content: "", name: "" }],
+      likes: { count: 0, users: [] },
       user: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
     });
     navigate("/");

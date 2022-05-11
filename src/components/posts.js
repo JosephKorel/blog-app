@@ -10,25 +10,34 @@ function Posts({
   addComment,
   setComment,
   deleteComment,
+  likePost,
 }) {
   const commentSection = posts.comments.map((item, i) => (
     <>
       {item.content !== "" && (
         <li>
-          <p>{item.content}</p>
-          <button onClick={() => deleteComment(posts.id, i)}>
-            Excluir comentário
-          </button>
+          <p>
+            {item.content} by <strong>{item.name}</strong>
+          </p>
+          {isAuth && auth.currentUser.uid == item.userId && (
+            <button onClick={() => deleteComment(posts.id, i)}>
+              Excluir comentário
+            </button>
+          )}
         </li>
       )}
     </>
   ));
+
   return (
     <div>
       <div>
         <h2>{posts.title}</h2>
         <p>{posts.body}</p>
-        <HeartOutlined />
+        <p>
+          {<HeartOutlined onClick={() => likePost(posts.id)} />}{" "}
+          {posts.likes.count}
+        </p>
         <h4>Autor: {posts.user.name}</h4>
         <h3>Comentários</h3>
         <input

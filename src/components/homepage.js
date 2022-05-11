@@ -47,12 +47,47 @@ function Home({ isAuth }) {
     await updateDoc(targetPost, {
       comments: [
         ...snapshot.data().comments,
-        { userId: auth.currentUser.uid, content: comment },
+        {
+          userId: auth.currentUser.uid,
+          content: comment,
+          name: auth.currentUser.displayName,
+        },
       ],
     }).then(() => {
       getPost();
       targetInput.value = "";
     });
+  };
+
+  const likePost = async (id) => {
+    const targetPost = doc(database, "posts", id);
+    const snapshot = await getDoc(targetPost);
+    const userArr = snapshot.data().likes.users;
+    if (isAuth == false) return;
+
+    await updateDoc(targetPost, {
+      likes: {
+        count: snapshot.data().likes.count + 1,
+        users: [...userArr, auth.currentUser.uid],
+      },
+    }).then(() => {
+      getPost();
+    });
+
+    if (snapshot.data().likes.users.includes(auth.currentUser.uid)) {
+      const filteredUsers = userArr.filter(
+        (item) => item !== auth.currentUser.uid
+      );
+      await updateDoc(targetPost, {
+        likes: {
+          count: snapshot.data().likes.count - 1,
+          users: filteredUsers,
+        },
+      }).then(() => {
+        getPost();
+      });
+      return;
+    }
   };
 
   const deleteComment = async (id, index, i) => {
@@ -82,6 +117,7 @@ function Home({ isAuth }) {
             deletePost={(id) => deletePost(id)}
             addComment={(id) => addComment(id, index)}
             deleteComment={(id, i) => deleteComment(id, index, i)}
+            likePost={(id) => likePost(id)}
           />
         ))}
       </div>

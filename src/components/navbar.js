@@ -24,17 +24,17 @@ function NavBar({ isAuth, setIsAuth, userName }) {
     <nav>
       <Link to="/">Home</Link>
       <Link to="/create-post">Novo post</Link>
-      <Link to="/login">Criar conta</Link>
+      <Link to="/account">Conta</Link>
       {isAuth && <button onClick={signOutGoogle}>Sair</button>}
       {isAuth ? (
-        <>
+        <div>
           <h2>Logged as: {userName}</h2>
           {userPhoto == "" ? (
             <UserOutlined style={{ fontSize: "32px", color: "#08c" }} />
           ) : (
             <img src={`${auth.currentUser.photoURL}`}></img>
           )}
-        </>
+        </div>
       ) : (
         <div></div>
       )}
