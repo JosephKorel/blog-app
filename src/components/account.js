@@ -75,12 +75,12 @@ function Account({
   const imgUpload = () => {
     if (uImg == null) return;
 
-    const imgRef = ref(storage, `images/${uImg.name + v4()}`);
+    const imgRef = ref(storage, `images/${auth.currentUser.displayName}`);
     uploadBytes(imgRef, uImg).then(() => {
       listAll(imgPath).then((response) => {
         response.items.forEach((item) => {
           getDownloadURL(item).then((url) => {
-            setImgUrl((prev) => [...prev, url]);
+            setImgUrl([url]);
             setProfileImg(imgUrl[0]);
             updateProfile(auth.currentUser, {
               photoURL: `${imgUrl[0]}`,
