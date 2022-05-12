@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  FieldValue,
+  serverTimestamp,
+  Timestamp,
+} from "firebase/firestore";
 import { database, auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 
@@ -17,6 +23,8 @@ function CreatePost({ isAuth }) {
       body,
       comments: [{ userId: "", content: "", name: "" }],
       likes: { count: 0, users: [] },
+      date: new Date().toLocaleDateString(),
+      createdAt: serverTimestamp(),
       user: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
     });
     navigate("/");

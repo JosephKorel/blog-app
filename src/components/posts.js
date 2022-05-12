@@ -38,7 +38,9 @@ function Posts({
           {<HeartOutlined onClick={() => likePost(posts.id)} />}{" "}
           {posts.likes.count}
         </p>
-        <h4>Autor: {posts.user.name}</h4>
+        <h4>
+          Autor: {posts.user.name}, em {posts.date}
+        </h4>
         <h3>Comentários</h3>
         <input
           placeholder="Comente"

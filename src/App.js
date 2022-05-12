@@ -10,7 +10,7 @@ import Account from "./components/account";
 function App() {
   const [isAuth, setIsAuth] = useLocalStorage("isAuth", false);
   const [userName, setUserName] = useLocalStorage("username", "");
-  const [profileImg, setProfileImg] = useState("");
+  const [profileImg, setProfileImg] = useState(null);
 
   return (
     <Router>
@@ -18,6 +18,8 @@ function App() {
         isAuth={isAuth}
         setIsAuth={setIsAuth}
         userName={userName}
+        profileImg={profileImg}
+        setProfileImg={setProfileImg}
       ></NavBar>
       <Routes>
         <Route path="/" element={<Home isAuth={isAuth} />}></Route>

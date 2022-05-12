@@ -39,9 +39,6 @@ function Account({
     setProfileImg(imgUrl[0]);
   }, [imgUrl]);
 
-  /* console.log(auth.currentUser.photoURL);
-  console.log(profileImg); */
-
   const googleSignIn = () => {
     signInWithPopup(auth, provider).then((result) => {
       setUserName(auth.currentUser.displayName);

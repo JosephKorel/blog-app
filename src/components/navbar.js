@@ -4,15 +4,17 @@ import { auth } from "../firebase-config";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { UserOutlined } from "@ant-design/icons";
 
-function NavBar({ isAuth, setIsAuth, userName }) {
+function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
   let navigate = useNavigate();
-  let userPhoto = "";
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      userPhoto += user.photoURL;
-    } else {
-    }
-  });
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setProfileImg(user.photoURL);
+      } else {
+      }
+    });
+  }, []);
 
   const signOutGoogle = () => {
     signOut(auth).then(() => {
@@ -29,10 +31,10 @@ function NavBar({ isAuth, setIsAuth, userName }) {
       {isAuth ? (
         <div>
           <h2>Logged as: {userName}</h2>
-          {userPhoto == "" ? (
+          {profileImg == null ? (
             <UserOutlined style={{ fontSize: "32px", color: "#08c" }} />
           ) : (
-            <img src={`${auth.currentUser.photoURL}`}></img>
+            <img src={profileImg}></img>
           )}
         </div>
       ) : (
