@@ -11,10 +11,20 @@ import {
   orderBy,
 } from "firebase/firestore";
 import Posts from "./posts";
+import ReactPaginate from "react-paginate";
 
 function Home({ isAuth }) {
   const [postList, setPostList] = useState([]);
   const [comment, setComment] = useState("");
+  const [page, setPage] = useState(0);
+
+  /* pagination */
+  const postPerPage = 5;
+  const visitedPages = postPerPage * page;
+  const pageCount = Math.ceil(postList.length / postPerPage);
+  const pageChange = ({ selected }) => {
+    setPage(selected);
+  };
 
   const postCollection = collection(database, "posts");
 
@@ -103,20 +113,30 @@ function Home({ isAuth }) {
     <div>
       <h1>Publicações</h1>
       <div>
-        {postList.map((posts, index) => (
-          <Posts
-            posts={posts}
-            isAuth={isAuth}
-            comment={comment}
-            setComment={setComment}
-            index={index}
-            key={index}
-            deletePost={(id) => deletePost(id)}
-            addComment={(id) => addComment(id, index)}
-            deleteComment={(id, i) => deleteComment(id, index, i)}
-            likePost={(id) => likePost(id)}
-          />
-        ))}
+        {postList
+          .slice(visitedPages, visitedPages + postPerPage)
+          .map((posts, index) => (
+            <Posts
+              posts={posts}
+              isAuth={isAuth}
+              comment={comment}
+              setComment={setComment}
+              index={index}
+              key={index}
+              deletePost={(id) => deletePost(id)}
+              addComment={(id) => addComment(id, index)}
+              deleteComment={(id, i) => deleteComment(id, index, i)}
+              likePost={(id) => likePost(id)}
+            />
+          ))}
+      </div>
+      <div>
+        <ReactPaginate
+          previousLabel="Página anterior"
+          nextLabel="Próxima página"
+          pageCount={pageCount}
+          onPageChange={pageChange}
+        />
       </div>
     </div>
   );
