@@ -17,6 +17,7 @@ function Home({ isAuth }) {
   const [postList, setPostList] = useState([]);
   const [comment, setComment] = useState("");
   const [page, setPage] = useState(0);
+  const [postIndex, setPostIndex] = useState(null);
 
   /* pagination */
   const postPerPage = 5;
@@ -72,7 +73,7 @@ function Home({ isAuth }) {
     });
   };
 
-  const likePost = async (id) => {
+  const likePost = async (id, index) => {
     const targetPost = doc(database, "posts", id);
     const snapshot = await getDoc(targetPost);
     if (isAuth == false) return;
@@ -86,6 +87,7 @@ function Home({ isAuth }) {
           users: filteredUsers,
         },
       });
+      setPostIndex(null);
       getPost();
     } else {
       await updateDoc(targetPost, {
@@ -94,6 +96,7 @@ function Home({ isAuth }) {
           users: [...snapshot.data().likes.users, auth.currentUser.uid],
         },
       });
+      setPostIndex(index);
       getPost();
     }
   };
@@ -110,8 +113,7 @@ function Home({ isAuth }) {
     });
   };
   return (
-    <div>
-      <h1>Publicações</h1>
+    <div className="bg-main-300">
       <div>
         {postList
           .slice(visitedPages, visitedPages + postPerPage)
@@ -122,11 +124,12 @@ function Home({ isAuth }) {
               comment={comment}
               setComment={setComment}
               index={index}
+              postIndex={postIndex}
               key={index}
               deletePost={(id) => deletePost(id)}
               addComment={(id) => addComment(id, index)}
               deleteComment={(id, i) => deleteComment(id, index, i)}
-              likePost={(id) => likePost(id)}
+              likePost={(id) => likePost(id, index)}
             />
           ))}
       </div>
