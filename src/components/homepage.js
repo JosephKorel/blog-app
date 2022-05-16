@@ -12,12 +12,14 @@ import {
 } from "firebase/firestore";
 import Posts from "./posts";
 import ReactPaginate from "react-paginate";
+import useLocalStorage from "./local-storage";
+import { Input } from "@chakra-ui/react";
 
-function Home({ isAuth }) {
-  const [postList, setPostList] = useState([]);
+function Home({ isAuth, profileImg }) {
+  const [postList, setPostList] = useLocalStorage("postList", []);
   const [comment, setComment] = useState("");
   const [page, setPage] = useState(0);
-  const [postIndex, setPostIndex] = useState(null);
+  const [postIndex, setPostIndex] = useState([]);
 
   /* pagination */
   const postPerPage = 5;
@@ -55,17 +57,19 @@ function Home({ isAuth }) {
   const addComment = async (id, index) => {
     const targetPost = doc(database, "posts", id);
     const targetInput = document.getElementById(`${index}_input`);
-
     const snapshot = await getDoc(targetPost);
+
+    if (comment == "") return;
 
     await updateDoc(targetPost, {
       comments: [
-        ...snapshot.data().comments,
         {
           userId: auth.currentUser.uid,
           content: comment,
           name: auth.currentUser.displayName,
+          userPhoto: auth.currentUser.photoURL,
         },
+        ...snapshot.data().comments,
       ],
     }).then(() => {
       getPost();
@@ -87,7 +91,7 @@ function Home({ isAuth }) {
           users: filteredUsers,
         },
       });
-      setPostIndex(null);
+      setPostIndex(postIndex.filter((item) => item !== index));
       getPost();
     } else {
       await updateDoc(targetPost, {
@@ -96,7 +100,7 @@ function Home({ isAuth }) {
           users: [...snapshot.data().likes.users, auth.currentUser.uid],
         },
       });
-      setPostIndex(index);
+      setPostIndex([...postIndex, index]);
       getPost();
     }
   };
@@ -112,6 +116,7 @@ function Home({ isAuth }) {
       getPost();
     });
   };
+
   return (
     <div className="bg-main-300">
       <div>
@@ -124,8 +129,10 @@ function Home({ isAuth }) {
               comment={comment}
               setComment={setComment}
               index={index}
+              postList={postList}
               postIndex={postIndex}
               key={index}
+              profileImg={profileImg}
               deletePost={(id) => deletePost(id)}
               addComment={(id) => addComment(id, index)}
               deleteComment={(id, i) => deleteComment(id, index, i)}

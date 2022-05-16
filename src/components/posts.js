@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth } from "../firebase-config";
-import { HeartOutlined, HeartFilled } from "@ant-design/icons";
+import "antd/es/comment/style/index.css";
+import { HeartOutlined, HeartFilled, DeleteFilled } from "@ant-design/icons";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
+import { Button } from "@chakra-ui/react";
+import { Comment, Tooltip, Avatar } from "antd";
+import moment from "moment/min/moment-with-locales";
+import "moment/locale/pt-br";
+import { onAuthStateChanged } from "firebase/auth";
 
 function Posts({
   posts,
   deletePost,
+  postList,
   isAuth,
   index,
   addComment,
@@ -14,20 +20,34 @@ function Posts({
   deleteComment,
   likePost,
   postIndex,
+  profileImg,
 }) {
+  let locale = window.navigator.userLanguage || window.navigator.language;
+  moment.locale(locale);
+
   const commentSection = posts.comments.map((item, i) => (
     <>
       {item.content !== "" && (
-        <li>
-          <p>
-            {item.content} by <strong>{item.name}</strong>
-          </p>
-          {isAuth && auth.currentUser.uid == item.userId && (
-            <button onClick={() => deleteComment(posts.id, i)}>
-              Excluir comentário
-            </button>
-          )}
-        </li>
+        <Comment
+          author={<a>{item.name}</a>}
+          avatar={<Avatar src={item.userPhoto} alt={item.name} />}
+          content={
+            <div className="flex justify-between">
+              <p>{item.content}</p>
+              {isAuth && auth.currentUser?.uid == item.userId && (
+                <DeleteFilled
+                  style={{ color: "#8d99ae" }}
+                  onClick={() => deleteComment(posts.id, i)}
+                />
+              )}
+            </div>
+          }
+          datetime={
+            <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
+              <span>{moment().fromNow()}</span>
+            </Tooltip>
+          }
+        />
       )}
     </>
   ));
@@ -40,8 +60,10 @@ function Posts({
             {posts.title}
           </h2>
           <div className="mt-2 w-[95%] m-auto bg-main-300">
-            <Paper>
-              <p className="p-2 text-justify leading-5">{posts.body}</p>
+            <Paper elevation={0}>
+              <p className="p-2 text-justify leading-5 indent-1.5 max-h-72 overflow-auto">
+                {posts.body}
+              </p>
               <div className="flex flex-row-reverse font-medium italic mr-2">
                 <p>
                   {posts.user.name}, <span>{posts.date}</span>
@@ -50,16 +72,16 @@ function Posts({
             </Paper>
           </div>
         </div>
-        <div className="flex align-center justify-between">
-          <div className="flex align-center ml-1 mt-2">
+        <div className="m-auto flex align-center justify-between w-[95%]">
+          <div className="flex align-center mt-2">
             <div>
-              {postIndex != index ? (
-                <HeartOutlined
+              {postIndex.includes(index) ? (
+                <HeartFilled
                   onClick={() => likePost(posts.id)}
                   style={{ fontSize: "20px", color: "#ce4257" }}
                 />
               ) : (
-                <HeartFilled
+                <HeartOutlined
                   onClick={() => likePost(posts.id)}
                   style={{ fontSize: "20px", color: "#ce4257" }}
                 />
@@ -70,30 +92,46 @@ function Posts({
             </p>
           </div>
           <div>
-            {isAuth && posts.user.id == auth.currentUser.uid && (
+            {isAuth && posts.user.id == auth.currentUser?.uid && (
               <Button
+                variant="solid"
                 onClick={() => deletePost(posts.id)}
-                variant="contained"
-                size="small"
-                sx={{ marginTop: "6px" }}
-                color="error"
+                colorScheme="red"
+                size="sm"
+                className="mt-2"
               >
                 Excluir
               </Button>
             )}
           </div>
         </div>
-        <h3>Comentários</h3>
-        <input
-          placeholder="Comente"
-          id={`${index}_input`}
-          onChange={(e) => setComment(e.target.value)}
-        ></input>
-        <button onClick={() => addComment(posts.id)}>Novo comentário</button>
-        <ul>{commentSection}</ul>
+        <div className="w-[95%] m-auto mt-2">
+          <h3 className="font-medium">Comentários</h3>
+          <div className="flex flex-col">
+            <textarea
+              className="border border-main rounded-md focus:border focus:border-slate-400 outline-none indent-1"
+              placeholder="Compartilhe sua opinião"
+              id={`${index}_input`}
+              onChange={(e) => setComment(e.target.value)}
+            ></textarea>
+            <div className="mt-2">
+              <Button onClick={() => addComment(posts.id)} colorScheme="purple">
+                Enviar
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="w-[95%] m-auto">{commentSection}</div>
+        {index !== postList.length - 1 && (
+          <div className="w-[90%] m-auto h-1 rounded-full bg-main mt-6"></div>
+        )}
       </div>
     </div>
   );
 }
 
 export default Posts;
+
+/* Os maiores escândalos de Hollywood que a história esqueceu
+
+Muitas pessoas acreditam firmemente que Walt Disney pode ter sido um antissemita, embora haja poucas evidências concretas para provar isso. Independentemente da falta de provas, ele não teve problemas em associar-se com pessoas abertamente hostis a judeus e orgulhosos disso! */

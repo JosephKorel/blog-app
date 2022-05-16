@@ -7,59 +7,62 @@ import {
   updateProfile,
   onAuthStateChanged,
 } from "firebase/auth";
+import { Input, Button } from "@chakra-ui/react";
+import { WarningIcon } from "@chakra-ui/icons";
 import { getDownloadURL, listAll, ref, uploadBytes } from "firebase/storage";
-import { UserOutlined } from "@ant-design/icons";
-import { v4 } from "uuid";
+import { FcGoogle } from "react-icons/fc";
+import { useNavigate } from "react-router-dom";
 
 function Account({
-  isAuth,
   setIsAuth,
   setUserName,
-  userName,
-  profileImg,
   setProfileImg,
+  nickname,
+  setNickname,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [uImg, setUImg] = useState(null);
-  const [imgUrl, setImgUrl] = useState([]);
+  const [hasAccount, setHasAccount] = useState(true);
+  const [error, setError] = useState(false);
+
+  let navigate = useNavigate();
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUserName(user.displayName);
         setProfileImg(user.photoURL);
+        console.log(auth.currentUser.photoURL);
       } else {
       }
     });
   }, [onAuthStateChanged]);
 
-  useEffect(() => {
-    setProfileImg(imgUrl[0]);
-  }, [imgUrl]);
-
   const googleSignIn = () => {
     signInWithPopup(auth, provider).then((result) => {
       setUserName(auth.currentUser.displayName);
       setIsAuth(true);
+      navigate("/");
     });
   };
 
   const createAcc = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        localStorage.setItem("isAuth", true);
-        setIsAuth(true);
-        updateProfile(auth.currentUser, { displayName: `${nickname}` }).then(
-          () => {
-            setUserName(auth.currentUser.displayName);
-          }
-        );
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (nickname) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          localStorage.setItem("isAuth", true);
+          setIsAuth(true);
+          updateProfile(auth.currentUser, { displayName: `${nickname}` }).then(
+            () => {
+              setUserName(auth.currentUser.displayName);
+            }
+          );
+        })
+        .catch((error) => {
+          setError(true);
+          setPassword("");
+        });
+    }
   };
 
   const logIn = () => {
@@ -67,79 +70,125 @@ function Account({
       .then(() => {
         setUserName(auth.currentUser.displayName);
         setIsAuth(true);
+        navigate("/");
       })
       .catch((error) => {});
   };
 
-  const imgPath = ref(storage, "images/");
-  const imgUpload = () => {
-    if (uImg == null) return;
-
-    const imgRef = ref(storage, `images/${auth.currentUser.displayName}`);
-    uploadBytes(imgRef, uImg).then(() => {
-      listAll(imgPath).then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item).then((url) => {
-            setImgUrl([url]);
-            setProfileImg(imgUrl[0]);
-            updateProfile(auth.currentUser, {
-              photoURL: `${imgUrl[0]}`,
-            })
-              .then(() => {
-                console.log("success");
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          });
-        });
-      });
-    });
-  };
-  console.log(profileImg);
-  console.log(imgUrl[0]);
-
   return (
     <div>
-      {isAuth ? (
-        <div>
-          <h1>Bem vindo {userName}</h1>
-          {profileImg == "" ? (
-            <UserOutlined style={{ fontSize: "32px", color: "#08c" }} />
-          ) : (
-            <>
-              <img src={`${profileImg}`}></img>
-            </>
-          )}
-          <h3>Alterar foto</h3>
-          <input
-            type="file"
-            onChange={(e) => setUImg(e.target.files[0])}
-            placeholder="Selecionar imagem"
-          ></input>
-          <button onClick={imgUpload}>Confirmar</button>
+      {hasAccount ? (
+        <div className="w-[95%] flex flex-col m-auto mt-6">
+          <div>
+            <Input
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              size="lg"
+              className="mb-2"
+              focusBorderColor="#8338ec"
+            />
+            <Input
+              placeholder="Senha"
+              onChange={(e) => setPassword(e.target.value)}
+              size="lg"
+              className="mb-2"
+              type="password"
+              focusBorderColor="#8338ec"
+            />
+          </div>
+          <Button colorScheme="purple" onClick={logIn}>
+            Entrar
+          </Button>
+          <div className="flex align-center justify-center mt-4">
+            <div className="flex-grow flex flex-col align-center justify-center">
+              <div className="border border-stone-800  h-0"></div>
+            </div>
+            <p className="px-4">OU</p>
+            <div className="flex-grow flex flex-col align-center justify-center">
+              <div className="border border-stone-800  h-0"></div>
+            </div>
+          </div>
+          <Button
+            className="mt-4"
+            leftIcon={<FcGoogle />}
+            onClick={googleSignIn}
+          >
+            Continuar com o Google
+          </Button>
+          <div className="text-center mt-4">
+            <p>
+              Não possui uma conta?{" "}
+              <span>
+                <Button
+                  colorScheme="purple"
+                  variant="link"
+                  onClick={() => setHasAccount(false)}
+                >
+                  Criar conta
+                </Button>
+              </span>
+            </p>
+          </div>
         </div>
       ) : (
-        <div>
-          <h2>Criar conta</h2>
-          <label>Nome de usuário</label>
-          <input
-            placeholder="Username"
-            onChange={(e) => setNickname(e.target.value)}
-          ></input>
-          <label>Email</label>
-          <input
-            placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
-          ></input>
-          <label>Senha</label>
-          <input
-            placeholder="Senha"
-            onChange={(e) => setPassword(e.target.value)}
-          ></input>
-          <button onClick={createAcc}>Registrar</button>
-          <button onClick={logIn}>Entrar</button>
-          <button onClick={googleSignIn}>Entrar com Google</button>
+        <div className="w-[95%] flex flex-col text-center m-auto">
+          <h1 className="text-lg text-stone-800 font-medium mt-6">
+            CRIAR CONTA
+          </h1>
+          <div className="">
+            <Input
+              placeholder="Nome de usuário"
+              onChange={(e) => setNickname(e.target.value)}
+              size="lg"
+              width="full"
+              className="mb-2 mt-6"
+              focusBorderColor="#8338ec"
+            />
+            <Input
+              placeholder="Email"
+              onChange={(e) => setEmail(e.target.value)}
+              size="lg"
+              className="mb-2"
+              focusBorderColor="#8338ec"
+            />
+            <Input
+              placeholder="Senha"
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setError(false);
+              }}
+              size="lg"
+              className="mb-2"
+              type="password"
+              focusBorderColor="#8338ec"
+              isInvalid={error}
+            />
+            {error && (
+              <div className="flex align-center mb-2">
+                <WarningIcon color="red.500" className="" />
+                <p className="text-red-500 leading-4">Senha inválida</p>
+              </div>
+            )}
+          </div>
+          <Button colorScheme="purple" variant="solid" onClick={createAcc}>
+            Criar conta
+          </Button>
+          <div className="flex align-center justify-center mt-4">
+            <div className="flex-grow flex flex-col align-center justify-center">
+              <div className="border border-stone-800  h-0"></div>
+            </div>
+            <p className="px-4">OU</p>
+            <div className="flex-grow flex flex-col align-center justify-center">
+              <div className="border border-stone-800  h-0"></div>
+            </div>
+          </div>
+          <Button
+            className="mt-4"
+            leftIcon={<FcGoogle />}
+            onClick={googleSignIn}
+          >
+            Continuar com o Google
+          </Button>
         </div>
       )}
     </div>

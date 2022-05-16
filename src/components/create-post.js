@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import { database, auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
+import { Button } from "@chakra-ui/react";
 
 function CreatePost({ isAuth }) {
   const [title, setTitle] = useState("");
@@ -18,37 +19,51 @@ function CreatePost({ isAuth }) {
   const postCollection = collection(database, "posts");
 
   const submitPost = async () => {
-    await addDoc(postCollection, {
-      title,
-      body,
-      comments: [{ userId: "", content: "", name: "" }],
-      likes: { count: 0, users: [] },
-      date: new Date().toLocaleDateString(),
-      createdAt: serverTimestamp(),
-      user: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-    });
-    navigate("/");
+    if (title && body) {
+      await addDoc(postCollection, {
+        title,
+        body,
+        comments: [{ userId: "", content: "", name: "", userPhoto: "" }],
+        likes: { count: 0, users: [] },
+        date: new Date().toLocaleDateString(),
+        createdAt: serverTimestamp(),
+        user: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
+      });
+      navigate("/");
+    }
   };
 
   return (
     <div>
-      <h1>Criar novo post</h1>
+      <h1 className="font-title text-2xl text-center mt-4">NOVA PUBLICAÇÃO</h1>
       <div>
-        <label>Título</label>
-        <input
-          placeholder="Título..."
-          onChange={(e) => setTitle(e.target.value)}
-        ></input>
-        <br></br>
-        <label>Publicação</label>
-        <textarea
-          placeholder="Publicação..."
-          onChange={(e) => setBody(e.target.value)}
-        ></textarea>
+        <div className="w-[95%] flex flex-col m-auto text-lg font-title">
+          <label>TÍTULO</label>
+          <input
+            placeholder="Título..."
+            onChange={(e) => setTitle(e.target.value)}
+            className="border px-1 rounded-md focus:border focus:border-slate-400 border-main outline-none"
+          ></input>
+        </div>
+        <div className="w-[95%] flex flex-col m-auto  mt-6">
+          <p className="text-lg font-title">CONTEÚDO</p>
+          <textarea
+            placeholder="Escreva aqui..."
+            onChange={(e) => setBody(e.target.value)}
+            className="border rounded-md p-1 border-main text-base font-normal h-40 focus:border focus:border-slate-400 outline-none"
+          ></textarea>
+        </div>
       </div>
-      <button onClick={submitPost} disabled={isAuth ? false : true}>
-        Postar
-      </button>
+      <div className="w-[95%] mt-6 m-auto">
+        <Button
+          onClick={submitPost}
+          _disabled={isAuth ? false : true}
+          colorScheme="purple"
+          width="full"
+        >
+          Postar
+        </Button>
+      </div>
     </div>
   );
 }
