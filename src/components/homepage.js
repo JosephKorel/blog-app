@@ -13,13 +13,18 @@ import {
 import Posts from "./posts";
 import ReactPaginate from "react-paginate";
 import useLocalStorage from "./local-storage";
-import { Input } from "@chakra-ui/react";
+import { IconButton, Input } from "@chakra-ui/react";
+import { DownCircleFilled } from "@ant-design/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import moment from "moment/min/moment-with-locales";
 
 function Home({ isAuth, profileImg }) {
   const [postList, setPostList] = useLocalStorage("postList", []);
   const [comment, setComment] = useState("");
   const [page, setPage] = useState(0);
   const [postIndex, setPostIndex] = useState([]);
+
+  console.log(postList[0]);
 
   /* pagination */
   const postPerPage = 5;
@@ -68,6 +73,7 @@ function Home({ isAuth, profileImg }) {
           content: comment,
           name: auth.currentUser.displayName,
           userPhoto: auth.currentUser.photoURL,
+          at: `${moment().format()}`,
         },
         ...snapshot.data().comments,
       ],
@@ -140,12 +146,21 @@ function Home({ isAuth, profileImg }) {
             />
           ))}
       </div>
-      <div>
+      <div className="my-2">
         <ReactPaginate
-          previousLabel="Página anterior"
-          nextLabel="Próxima página"
+          previousLabel={
+            <IconButton
+              as={ChevronLeftIcon}
+              hidden={pageCount <= 1 && true}
+              size="sm"
+            />
+          }
+          nextLabel={<IconButton as={ChevronRightIcon} size="sm" />}
           pageCount={pageCount}
           onPageChange={pageChange}
+          containerClassName="container"
+          pageClassName="pages"
+          activeClassName="active-page"
         />
       </div>
     </div>

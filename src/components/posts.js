@@ -12,7 +12,6 @@ import { onAuthStateChanged } from "firebase/auth";
 function Posts({
   posts,
   deletePost,
-  postList,
   isAuth,
   index,
   addComment,
@@ -20,7 +19,6 @@ function Posts({
   deleteComment,
   likePost,
   postIndex,
-  profileImg,
 }) {
   let locale = window.navigator.userLanguage || window.navigator.language;
   moment.locale(locale);
@@ -44,7 +42,7 @@ function Posts({
           }
           datetime={
             <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-              <span>{moment().fromNow()}</span>
+              <span>{moment(item.at).fromNow()}</span>
             </Tooltip>
           }
         />
@@ -122,9 +120,7 @@ function Posts({
           </div>
         </div>
         <div className="w-[95%] m-auto">{commentSection}</div>
-        {index !== postList.length - 1 && (
-          <div className="w-[90%] m-auto h-1 rounded-full bg-main mt-6"></div>
-        )}
+        <div className="w-[90%] m-auto h-1 rounded-full bg-[#ffbe0b] mt-6"></div>
       </div>
     </div>
   );

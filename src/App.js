@@ -40,7 +40,7 @@ function App() {
           ></NavBar>
           <Routes>
             <Route
-              path="/"
+              path="/blog-app/"
               element={<Home isAuth={isAuth} profileImg={profileImg} />}
             ></Route>
             <Route

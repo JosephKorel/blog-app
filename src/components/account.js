@@ -42,7 +42,7 @@ function Account({
     signInWithPopup(auth, provider).then((result) => {
       setUserName(auth.currentUser.displayName);
       setIsAuth(true);
-      navigate("/");
+      navigate("/blog-app/");
     });
   };
 
@@ -70,7 +70,7 @@ function Account({
       .then(() => {
         setUserName(auth.currentUser.displayName);
         setIsAuth(true);
-        navigate("/");
+        navigate("/blog-app/");
       })
       .catch((error) => {});
   };

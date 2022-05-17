@@ -35,7 +35,7 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
   const signOutGoogle = () => {
     signOut(auth).then(() => {
       setIsAuth(false);
-      navigate("/");
+      navigate("/blog-app/");
     });
   };
   return (
@@ -87,14 +87,14 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
               </p>
             </div>
             <div className="flex flex-col align-center justify-center mr-5 text-lg">
-              {location.pathname == "/" ? (
+              {location.pathname == "/blog-app/" ? (
                 <Link to="/create-post">
                   <Button variant="solid" colorScheme="purple">
                     Novo post
                   </Button>
                 </Link>
               ) : (
-                <Link to="/">
+                <Link to="/blog-app/">
                   <Button variant="solid" colorScheme="purple">
                     Home
                   </Button>
@@ -103,11 +103,17 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
             </div>
           </div>
         ) : (
-          <div className="w-7/12 ml-2 flex justify-between text-lg font-sans font-semibold text-[#383d4a] ">
-            <h1 onClick={() => navigate("/")} className="cursor-pointer">
+          <div className=" ml-2 flex text-lg font-sans font-semibold text-[#383d4a] ">
+            <h1
+              onClick={() => navigate("/blog-app/")}
+              className="cursor-pointer"
+            >
               HOME
             </h1>
-            <h1 onClick={() => navigate("/account")} className="cursor-pointer">
+            <h1
+              onClick={() => navigate("/account")}
+              className="cursor-pointer text-purple-700 ml-6"
+            >
               ENTRAR
             </h1>
           </div>

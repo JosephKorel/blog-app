@@ -9,6 +9,7 @@ import {
 import { database, auth } from "../firebase-config";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
+import moment from "moment/min/moment-with-locales";
 
 function CreatePost({ isAuth }) {
   const [title, setTitle] = useState("");
@@ -23,13 +24,21 @@ function CreatePost({ isAuth }) {
       await addDoc(postCollection, {
         title,
         body,
-        comments: [{ userId: "", content: "", name: "", userPhoto: "" }],
+        comments: [
+          {
+            userId: "",
+            content: "",
+            name: "",
+            userPhoto: "",
+            at: "",
+          },
+        ],
         likes: { count: 0, users: [] },
         date: new Date().toLocaleDateString(),
         createdAt: serverTimestamp(),
         user: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
       });
-      navigate("/");
+      navigate("/blog-app/");
     }
   };
 

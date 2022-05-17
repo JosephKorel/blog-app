@@ -2,3 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+.container{
+    width: 70%;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.pages{
+    color:gray;
+    font-size: 1.1em;
+    padding: 1px;
+    padding-left: 9px;
+    padding-right: 9px;
+    border-radius: 50%;
+    
+}
+
+.pages:hover{
+    background-color: #ac7cf0;
+    transition: 200ms;
+    color: aliceblue;
+  
+}
+
+.active-page{
+    color: aliceblue;
+    padding: 1px;
+    padding-left: 9px;
+    padding-right: 9px;
+    border-radius: 50%;
+    background-color: #8338ec;
+
+}
