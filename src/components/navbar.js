@@ -43,7 +43,7 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
       <div className="w-full">
         {isAuth ? (
           <div className="flex justify-between">
-            <div className="flex align-center w-1/2">
+            <div className="flex align-center w-2/3">
               <div className="flex flex-col align-center justify-center">
                 <Menu>
                   <MenuButton
@@ -93,7 +93,7 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
                   <Button
                     variant="solid"
                     colorScheme="purple"
-                    size={window.innerWidth > 1536 && "lg"}
+                    size={window.innerWidth > 1280 ? "lg" : "sm"}
                   >
                     Novo post
                   </Button>
@@ -103,7 +103,7 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
                   <Button
                     variant="solid"
                     colorScheme="purple"
-                    size={window.innerWidth > 1536 && "lg"}
+                    size={window.innerWidth > 1280 ? "lg" : "sm"}
                   >
                     Home
                   </Button>

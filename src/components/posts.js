@@ -121,7 +121,7 @@ function Posts({
               <Button
                 onClick={() => addComment(posts.id)}
                 colorScheme="purple"
-                size={window.innerWidth > 1280 && "lg"}
+                size={window.innerWidth > 1280 ? "lg" : "md"}
               >
                 Enviar
               </Button>
