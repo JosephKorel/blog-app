@@ -78,7 +78,7 @@ function Account({
   return (
     <div>
       {hasAccount ? (
-        <div className="w-[95%] flex flex-col m-auto mt-6">
+        <div className="w-[95%] md:w-[85%] lg:w-1/2 flex flex-col m-auto mt-6">
           <div>
             <Input
               placeholder="Email"
@@ -131,8 +131,8 @@ function Account({
           </div>
         </div>
       ) : (
-        <div className="w-[95%] flex flex-col text-center m-auto">
-          <h1 className="text-lg text-stone-800 font-medium mt-6">
+        <div className="w-[95%] md:w-[85%] lg:w-1/2 flex flex-col text-center m-auto">
+          <h1 className="text-lg md:text-2xl text-stone-800 font-medium mt-6">
             CRIAR CONTA
           </h1>
           <div className="">

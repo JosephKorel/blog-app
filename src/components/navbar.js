@@ -39,42 +39,43 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
     });
   };
   return (
-    <nav className="bg-[#e7dcc1] py-2 flex align-center justify-between sticky top-0 z-10">
+    <nav className="bg-[#e7dcc1] py-2 2xl:py-3 flex align-center justify-between sticky top-0 z-10">
       <div className="w-full">
         {isAuth ? (
           <div className="flex justify-between">
             <div className="flex align-center w-1/2">
-              <Menu>
-                <MenuButton
-                  as={IconButton}
-                  aria-label="Options"
-                  icon={<HamburgerIcon />}
-                  variant="outline"
-                  border="none"
-                  _focus={{ backgroundColor: "none" }}
-                  _active={{ backgroundColor: "none" }}
-                  _hover={{ backgroundColor: "none" }}
-                ></MenuButton>
-                <MenuList bgColor="#E7DCC1">
-                  <MenuItem
-                    icon={<Icon as={BiLogOut} w={18} h={18} />}
-                    onClick={signOutGoogle}
-                  >
-                    Sair
-                  </MenuItem>
-                  <MenuItem
-                    icon={<Icon as={CgProfile} w={18} h={18} />}
-                    onClick={() => navigate("/profile")}
-                  >
-                    Perfil
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-
+              <div className="flex flex-col align-center justify-center">
+                <Menu>
+                  <MenuButton
+                    as={IconButton}
+                    aria-label="Options"
+                    icon={<HamburgerIcon />}
+                    variant="outline"
+                    border="none"
+                    _focus={{ backgroundColor: "none" }}
+                    _active={{ backgroundColor: "none" }}
+                    _hover={{ backgroundColor: "none" }}
+                  ></MenuButton>
+                  <MenuList bgColor="#E7DCC1">
+                    <MenuItem
+                      icon={<Icon as={BiLogOut} w={18} h={18} />}
+                      onClick={signOutGoogle}
+                    >
+                      Sair
+                    </MenuItem>
+                    <MenuItem
+                      icon={<Icon as={CgProfile} w={18} h={18} />}
+                      onClick={() => navigate("/profile")}
+                    >
+                      Perfil
+                    </MenuItem>
+                  </MenuList>
+                </Menu>
+              </div>
               {profileImg == null ? (
                 <UserOutlined style={{ fontSize: "32px", color: "#08c" }} />
               ) : (
-                <div className="pr-3">
+                <div className="pr-3 flex flex-col align-center justify-center">
                   <Avatar
                     src={profileImg}
                     alt={auth.currentUser?.displayName}
@@ -89,13 +90,21 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
             <div className="flex flex-col align-center justify-center mr-5 text-lg">
               {location.pathname == "/blog-app/" ? (
                 <Link to="/create-post">
-                  <Button variant="solid" colorScheme="purple">
+                  <Button
+                    variant="solid"
+                    colorScheme="purple"
+                    size={window.innerWidth > 1536 && "lg"}
+                  >
                     Novo post
                   </Button>
                 </Link>
               ) : (
                 <Link to="/blog-app/">
-                  <Button variant="solid" colorScheme="purple">
+                  <Button
+                    variant="solid"
+                    colorScheme="purple"
+                    size={window.innerWidth > 1536 && "lg"}
+                  >
                     Home
                   </Button>
                 </Link>
@@ -103,7 +112,7 @@ function NavBar({ isAuth, setIsAuth, userName, profileImg, setProfileImg }) {
             </div>
           </div>
         ) : (
-          <div className=" ml-2 flex text-lg font-sans font-semibold text-[#383d4a] ">
+          <div className="ml-2 flex text-lg 2xl:text-xl font-sans font-semibold text-[#383d4a] ">
             <h1
               onClick={() => navigate("/blog-app/")}
               className="cursor-pointer"

@@ -18,7 +18,6 @@ function Posts({
   setComment,
   deleteComment,
   likePost,
-  postIndex,
 }) {
   let locale = window.navigator.userLanguage || window.navigator.language;
   moment.locale(locale);
@@ -27,11 +26,17 @@ function Posts({
     <>
       {item.content !== "" && (
         <Comment
-          author={<a>{item.name}</a>}
-          avatar={<Avatar src={item.userPhoto} alt={item.name} />}
+          author={<a className="2xl:text-lg">{item.name}</a>}
+          avatar={
+            <Avatar
+              src={item.userPhoto}
+              alt={item.name}
+              size={window.innerWidth > 1536 && "large"}
+            />
+          }
           content={
             <div className="flex justify-between">
-              <p>{item.content}</p>
+              <p className="2xl:text-lg">{item.content}</p>
               {isAuth && auth.currentUser?.uid == item.userId && (
                 <DeleteFilled
                   style={{ color: "#8d99ae" }}
@@ -42,7 +47,7 @@ function Posts({
           }
           datetime={
             <Tooltip title={moment().format("YYYY-MM-DD HH:mm:ss")}>
-              <span>{moment(item.at).fromNow()}</span>
+              <span className="2xl:text-lg">{moment(item.at).fromNow()}</span>
             </Tooltip>
           }
         />
@@ -53,16 +58,16 @@ function Posts({
   return (
     <div>
       <div>
-        <div className="flex flex-col">
-          <h2 className="m-auto text-2xl font-title text-center mt-3 w-[92%]">
+        <div className="flex flex-col lg:w-5/6 2xl:w-2/3 m-auto">
+          <h2 className="m-auto text-2xl 2xl:text-5xl font-title text-center mt-3 2xl:mt-6 w-[92%]">
             {posts.title}
           </h2>
-          <div className="mt-2 w-[95%] m-auto bg-main-300">
+          <div className="mt-2 2xl:mt-5 w-[95%] m-auto bg-main-300">
             <Paper elevation={0}>
-              <p className="p-2 text-justify leading-5 indent-1.5 max-h-72 overflow-auto">
+              <p className="p-2 text-justify 2xl:text-lg leading-5 indent-1.5 max-h-72 overflow-auto">
                 {posts.body}
               </p>
-              <div className="flex flex-row-reverse font-medium italic mr-2">
+              <div className="2xl:text-lg flex flex-row-reverse font-medium italic mr-2">
                 <p>
                   {posts.user.name}, <span>{posts.date}</span>
                 </p>
@@ -70,10 +75,10 @@ function Posts({
             </Paper>
           </div>
         </div>
-        <div className="m-auto flex align-center justify-between w-[95%]">
+        <div className="m-auto flex align-center justify-between w-[95%] lg:w-5/6 2xl:w-2/3">
           <div className="flex align-center mt-2">
             <div>
-              {postIndex.includes(index) ? (
+              {posts.likes.users.includes(auth.currentUser?.uid) ? (
                 <HeartFilled
                   onClick={() => likePost(posts.id)}
                   style={{ fontSize: "20px", color: "#ce4257" }}
@@ -103,24 +108,30 @@ function Posts({
             )}
           </div>
         </div>
-        <div className="w-[95%] m-auto mt-2">
-          <h3 className="font-medium">Comentários</h3>
+        <div className="w-[95%] lg:w-5/6 2xl:w-2/3 m-auto mt-2">
+          <h3 className="font-medium 2xl:text-xl 2xl:mb-2">Comentários</h3>
           <div className="flex flex-col">
             <textarea
-              className="border border-main rounded-md focus:border focus:border-slate-400 outline-none indent-1"
+              className="border border-main rounded-md focus:border focus:border-slate-400 outline-none indent-1 md:h-28 2xl:text-lg"
               placeholder="Compartilhe sua opinião"
               id={`${index}_input`}
               onChange={(e) => setComment(e.target.value)}
             ></textarea>
             <div className="mt-2">
-              <Button onClick={() => addComment(posts.id)} colorScheme="purple">
+              <Button
+                onClick={() => addComment(posts.id)}
+                colorScheme="purple"
+                size={window.innerWidth > 1280 && "lg"}
+              >
                 Enviar
               </Button>
             </div>
           </div>
         </div>
-        <div className="w-[95%] m-auto">{commentSection}</div>
-        <div className="w-[90%] m-auto h-1 rounded-full bg-[#ffbe0b] mt-6"></div>
+        <div className="w-[95%] lg:w-5/6 2xl:w-2/3 m-auto">
+          {commentSection}
+        </div>
+        <div className="w-[90%] lg:w-[80%] 2xl:w-[60%] m-auto h-1 rounded-full bg-[#ffbe0b] mt-6"></div>
       </div>
     </div>
   );

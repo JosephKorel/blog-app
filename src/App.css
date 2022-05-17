@@ -3,8 +3,6 @@
 @tailwind utilities;
 
 .container{
-    width: 70%;
-    margin: auto;
     display: flex;
     align-items: center;
     justify-content: space-evenly;
@@ -36,3 +34,4 @@
     background-color: #8338ec;
 
 }
+

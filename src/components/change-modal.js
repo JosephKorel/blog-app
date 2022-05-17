@@ -50,7 +50,11 @@ function ChangeModal({ title, setProfileImg }) {
         {title}
       </Button>
 
-      <Modal isOpen={isOpen} onClose={onClose} size="xs">
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size={window.innerWidth > 640 ? "xl" : "xs"}
+      >
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Alterar foto de perfil</ModalHeader>

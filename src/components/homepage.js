@@ -24,8 +24,6 @@ function Home({ isAuth, profileImg }) {
   const [page, setPage] = useState(0);
   const [postIndex, setPostIndex] = useState([]);
 
-  console.log(postList[0]);
-
   /* pagination */
   const postPerPage = 5;
   const visitedPages = postPerPage * page;
@@ -146,7 +144,7 @@ function Home({ isAuth, profileImg }) {
             />
           ))}
       </div>
-      <div className="my-2">
+      <div className="my-2 w-[70%] lg:w-1/2 2xl:w-1/3 m-auto">
         <ReactPaginate
           previousLabel={
             <IconButton
@@ -155,7 +153,13 @@ function Home({ isAuth, profileImg }) {
               size="sm"
             />
           }
-          nextLabel={<IconButton as={ChevronRightIcon} size="sm" />}
+          nextLabel={
+            <IconButton
+              as={ChevronRightIcon}
+              hidden={pageCount <= 1 && true}
+              size="sm"
+            />
+          }
           pageCount={pageCount}
           onPageChange={pageChange}
           containerClassName="container"
